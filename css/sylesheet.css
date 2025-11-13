@@ -1,0 +1,343 @@
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 93.75%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
+            font-size: 15px;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #4B4F58;
+            background-color: #FFFFFF;
+        }
+
+        a {
+            color: #d11111;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #3a3a3a;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #000;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        .site-header {
+            background: #ffffff;
+        }
+
+        /* Above Header */
+        .ast-above-header-bar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #eaeaea;
+            min-height: 30px;
+        }
+
+        .site-above-header-wrap {
+            max-width: 100%;
+            padding-left: 35px;
+            padding-right: 35px;
+            margin: 0 auto;
+        }
+
+        .ast-builder-grid-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .site-header-above-section-left {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Logo and Title */
+        .site-branding {
+            display: flex;
+            align-items: center;
+        }
+
+        .site-logo-img img {
+            max-width: 100px;
+            height: auto;
+            margin-right: 1em;
+        }
+
+        .site-title {
+            font-size: 42px;
+            font-size: 2.8rem;
+            font-weight: inherit;
+            line-height: 1;
+        }
+
+        .site-title a {
+            color: #3a3a3a;
+        }
+
+        .site-description {
+            font-size: 15px;
+            font-size: 1rem;
+            color: #3a3a3a;
+            margin-top: 4px;
+        }
+
+        /* Social Icons */
+        .ast-header-social-1-wrap {
+            display: flex;
+            align-items: center;
+        }
+
+        .ast-builder-social-element {
+            margin-left: 8.5px;
+            margin-right: 8.5px;
+        }
+
+        .ast-builder-social-element svg {
+            width: 18px;
+            height: 18px;
+            fill: #557dbc;
+        }
+
+        /* Navigation Menu */
+        .main-header-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-header-menu .menu-item {
+            display: flex;
+            align-items: center;
+            line-height: 30px;
+        }
+
+        .main-header-menu .menu-link {
+            padding: 0 15px;
+            color: #3a3a3a;
+            display: block;
+        }
+
+        .main-header-menu .current-menu-item .menu-link {
+            font-weight: bold;
+        }
+
+        /* Primary Header */
+        .ast-primary-header-bar {
+            background-color: #ffffff;
+            border-bottom: 0px solid #eaeaea;
+            min-height: 30px;
+        }
+
+        .site-primary-header-wrap {
+            max-width: 100%;
+            padding-left: 35px;
+            padding-right: 35px;
+            margin: 0 auto;
+        }
+
+        /* Header Widget with Cover Image */
+        .header-widget-area {
+            margin-top: 25px;
+            margin-bottom: 25px;
+            margin-left: 25px;
+            width: 100%;
+        }
+
+        .wp-block-cover {
+            position: relative;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: 52% 40%;
+            padding: var(--wp--preset--spacing--30);
+        }
+
+        .wp-block-cover__background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .wp-block-cover__image-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: 52% 40%;
+        }
+
+        .wp-block-cover__inner-container {
+            position: relative;
+            z-index: 1;
+            color: white;
+        }
+
+        .wp-block-cover h4 {
+            font-size: 36px;
+            font-size: 2.6666666666667rem;
+            color: white;
+            margin: 0;
+        }
+
+        /* Main Content */
+        .site-content {
+            padding: 60px 0;
+        }
+
+        .ast-container {
+            max-width: 1622px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .content-area {
+            width: 100%;
+        }
+
+        .entry-header {
+            margin-bottom: 2em;
+        }
+
+        .entry-title {
+            font-size: 30px;
+            font-size: 2rem;
+            color: #3a3a3a;
+            margin-bottom: 0.5em;
+        }
+
+        .entry-content {
+            line-height: 1.8;
+        }
+
+        .entry-content p {
+            margin-bottom: 1.5em;
+        }
+
+        .entry-content h2,
+        .entry-content h3 {
+            color: #3a3a3a;
+            margin-top: 1.5em;
+            margin-bottom: 1em;
+        }
+
+        .entry-content h2 {
+            font-size: 30px;
+            font-size: 2rem;
+        }
+
+        .entry-content h3 {
+            font-size: 25px;
+            font-size: 1.6666666666667rem;
+        }
+
+        .entry-content hr {
+            margin: 2em 0;
+            border: 0;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .entry-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 2em 0;
+        }
+
+        /* Footer */
+        .site-footer {
+            background-color: #eeeeee;
+            padding: 20px 0;
+            min-height: 80px;
+        }
+
+        .site-below-footer-wrap {
+            max-width: 1582px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .ast-footer-copyright {
+            text-align: center;
+            font-size: 13px;
+            font-size: 0.86666666666667rem;
+            color: #4B4F58;
+        }
+
+        /* Responsive */
+        @media (max-width: 921px) {
+            html {
+                font-size: 85.5%;
+            }
+
+            .site-title {
+                display: block;
+            }
+
+            .entry-title {
+                font-size: 30px;
+            }
+
+            .wp-block-cover h4 {
+                font-size: 30px;
+            }
+
+            .main-header-menu {
+                flex-direction: column;
+            }
+
+            .site-above-header-wrap,
+            .site-primary-header-wrap {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        }
+
+        @media (max-width: 544px) {
+            html {
+                font-size: 85.5%;
+            }
+
+            .site-title {
+                display: none;
+            }
+
+            .header-widget-area {
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .entry-title {
+                font-size: 30px;
+            }
+
+            .wp-block-cover h4 {
+                font-size: 30px;
+            }
+        }
