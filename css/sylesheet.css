@@ -207,9 +207,10 @@
 
         /* Footer */
         .site-footer {
-            position: absolute;
+            position: fixed;
             width: 100%;
             left: 0;
+            bottom: 0;
             background-color: #eeeeee;
             padding: 20px;
             text-align: center;

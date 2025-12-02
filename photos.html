@@ -6,6 +6,46 @@
     <title>About Vermont Dodgeball – Vermont Dodgeball</title>
     <link rel="icon" type="image/jpeg" href="favicon.jpg" sizes="32x32">
   <link rel="stylesheet" href="css/sylesheet.css">
+  <style>
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .photo-item {
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .photo-item:hover {
+            transform: scale(3);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Responsive - 2 columns on tablets */
+        @media (max-width: 768px) {
+            .photo-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Responsive - 1 column on mobile */
+        @media (max-width: 480px) {
+            .photo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+  </style>
 </head>
 <body>
     <a class="skip-link" href="#content">Skip to content</a>
@@ -50,41 +90,28 @@
         <hr>
 
     </header>
-            <div class="hero">
-                <div class="hero-cover">
-                    <img class="hero-image" 
-                        src="assets/images/centerpiece.jpg" 
-                        alt="">
-                    <h4 class="hero-text">Playing Every Monday Night in Burlington</h4>
-                </div>
-            </div>
+
     <main id="content" class="site-content">
         <div class="container">
-
             <article>
-                <h1 class="entry-title">About Vermont Dodgeball</h1>
+                <div class="photo-grid">
 
-                <div class="entry-content">
-                    <p>Remember playing dodgeball in elementary school? We don't either but this is probably like that only you get to throw balls at your adult friends and other great people. We use rules based off of the American Dodgeball Association guidelines.</p>
+                    <div class="photo-item">
+                        <img src="assets/images/event_images/11049589_813506993990_4959144656143882501_o.jpg" alt="Photo 2">
+                    </div>
+                    <div class="photo-item">
+                        <img src="assets/images/event_images/12357196_813507153670_2262287993943063220_o.jpg" alt="Photo 3">
+                    </div>
+                    <div class="photo-item">
+                        <img src="assets/images/event_images/12370872_813507902170_2163309519255899392_o.jpg" alt="Photo 5">
+                    </div>
+                    <div class="photo-item">
+                        <img src="assets/images/event_images/12375014_813506779420_5667679698125042210_o.jpg" alt="Photo 6">
+                    </div>
+                    <div class="photo-item">
+                        <img src="assets/images/event_images/15975250_1823576351217171_7058568255107167939_o.jpg" alt="Photo 7">
+                    </div>
 
-                    <p>Vermont Dodgeball is a pickup dodgeball league. 
-                        This means that you can just show up and play without a team. 
-                        The teams are random and put together before we play. 
-                        It's a fun way to relieve your Monday workday stress. 
-                        It's only $5.00 per game and it's an awesome workout. 
-                        Prepare to be sore.</p>
-
-                    <p>Come play!</p>
-
-                    <hr>
-
-                    <p>
-                        <img src="assets/images/footer_photo.jpg" 
-                             alt="" 
-                             width="1157" 
-                             height="482">
-                    </p>
-                </div>
             </article>
         </div>
     </main>
