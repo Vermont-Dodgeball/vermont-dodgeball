@@ -96,13 +96,13 @@
 
         /* Social Icons */
         .social-link {
-            margin: 0 8.5px;
+            margin: 0 .5px;
         }
 
         .social-link svg {
             width: 18px;
             height: 18px;
-            fill: #557dbc;
+            fill: #000000;
         }
 
         /* Navigation */
