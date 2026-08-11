@@ -14,6 +14,10 @@
             line-height: 1.6;
             color: #4B4F58;
             background-color: #FFFFFF;
+            /* Keeps the footer at the bottom of short pages without position: fixed. */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         a {
@@ -25,9 +29,11 @@
             color: #3a3a3a;
         }
 
-        .site-content {
+        .site-wrapper {
             max-width: 70%;
-            margin: auto;
+            width: 100%;
+            margin: 0 auto;
+            flex: 1;
         }
 
         .nav-link {
@@ -122,7 +128,9 @@
 
         /* Hero Image */
         .hero {
-            margin: 25px 25px 25px 60px;
+            /* Was 25px 25px 25px 60px, which sat visibly off-centre. Matched to
+               the wider side so the hero's left edge does not move. */
+            margin: 25px 60px;
             background-color: #000;
         }
 
@@ -133,16 +141,6 @@
             align-items: center;
             justify-content: center;
             background-size: cover;
-        }
-
-        .hero-cover::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0);
         }
 
         .hero-image {
@@ -168,7 +166,13 @@
         }
 
         /* Main Content */
-        .site-content {
+        .site-main {
+            /* Deliberately narrower than the header and hero above it. This was
+               previously an accident of .site-content applying to both the page
+               wrapper and <main>, nesting two 70% constraints; it is kept here
+               so the text column stays where it has always sat on the page. */
+            max-width: 70%;
+            margin: 0 auto;
             padding: 60px 0;
         }
 
@@ -207,10 +211,6 @@
 
         /* Footer */
         .site-footer {
-            position: fixed;
-            width: 100%;
-            left: 0;
-            bottom: 0;
             background-color: #eeeeee;
             padding: 20px;
             text-align: center;
