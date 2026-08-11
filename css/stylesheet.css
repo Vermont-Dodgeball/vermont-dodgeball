@@ -382,6 +382,17 @@ a:hover {
     color: var(--color-text-strong);
 }
 
+.next-game-subscribe {
+    margin-top: var(--space-md);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+}
+
+.next-game-subscribe a {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
 .next-game-note {
     margin-top: var(--space-lg);
     padding-top: var(--space-md);

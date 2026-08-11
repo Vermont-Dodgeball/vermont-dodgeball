@@ -31,7 +31,13 @@ to public**. Leave the dropdown on *See only free/busy* → change it to **See
 all event details**, or the page can read that something exists but not when.
 
 This also lets members subscribe to the calendar directly, which is worth
-having regardless.
+having regardless — the homepage links to it (see below).
+
+**Give the calendar a proper name while you're in there.** Whatever is in
+**Settings → Name** is what subscribers see in their own calendar app. A
+calendar left with its default name shows up in someone's phone as
+`vermontdodgeball@gmail.com`, which is not obviously dodgeball. Set it to
+*Vermont Dodgeball*.
 
 ### 2. Copy the calendar ID
 
@@ -100,6 +106,21 @@ entry.
 
 Only events **starting in the future** appear; a game in progress or just
 finished drops off automatically.
+
+## Subscribe links
+
+The card ends with *"Get these dates in your own calendar: Google Calendar ·
+Apple or Outlook"*. Both links are built from the configured calendar ID, so
+there is nothing extra to maintain — they follow whatever calendar the site is
+reading.
+
+The Apple/Outlook link deliberately uses the `webcal://` scheme rather than
+`https://`. The same feed over https downloads a **one-off snapshot**: the
+subscriber gets today's dates frozen, and never sees a game added or
+cancelled afterwards. `webcal://` subscribes, so their calendar keeps up.
+
+These links depend only on the calendar being public — not on the API key — so
+they appear even if the events request fails.
 
 ## Cancelling a game, or skipping a week
 
