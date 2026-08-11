@@ -110,7 +110,12 @@
     </script>
     <script>
         fetch('data/photos.json')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Request failed with status ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 const grid = document.getElementById('photo-grid');
                 data.photos.forEach(photo => {
@@ -124,7 +129,8 @@
                     item.appendChild(img);
                     grid.appendChild(item);
                 });
-            });
+            })
+            .catch(error => console.error('Could not load photos:', error));
     </script>
 </body>
 </html>

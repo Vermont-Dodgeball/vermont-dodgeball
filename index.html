@@ -100,11 +100,29 @@
     <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
     <script>
         fetch('data/about.json')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Request failed with status ${response.status}`);
+                }
+                return response.json();
+            })
             .then(about => {
                 document.getElementById('hero-tagline').textContent = about.tagline;
-                document.getElementById('about-body').innerHTML = marked.parse(about.body);
-            });
+
+                const aboutBody = document.getElementById('about-body');
+
+                // Fall back to plain paragraphs if the Markdown library is unreachable.
+                if (window.marked) {
+                    aboutBody.innerHTML = marked.parse(about.body);
+                } else {
+                    about.body.split('\n\n').forEach(paragraph => {
+                        const p = document.createElement('p');
+                        p.textContent = paragraph;
+                        aboutBody.appendChild(p);
+                    });
+                }
+            })
+            .catch(error => console.error('Could not load about content:', error));
     </script>
 </body>
 </html>

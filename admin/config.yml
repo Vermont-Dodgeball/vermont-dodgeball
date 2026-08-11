@@ -2,12 +2,9 @@ backend:
   name: github
   repo: Vermont-Dodgeball/vermont-dodgeball
   branch: main
-  # Sveltia CMS needs a small OAuth proxy to log editors in with their GitHub
-  # account (GitHub Pages can't do the OAuth token exchange itself, since
-  # that requires a server-side secret). Once the proxy is deployed
-  # (see https://github.com/sveltia/sveltia-cms-auth for a free one-command
-  # deploy to Cloudflare Workers), uncomment and set this to its URL:
-  # base_url: https://your-worker-subdomain.workers.dev
+  # Login requires a free OAuth proxy worker. Until it's deployed and set
+  # here, signing in will fail. Setup steps: see README.md in this folder.
+  base_url: https://sveltia-cms-auth.clayton-noyes.workers.dev
 
 media_folder: "assets/images/uploads"
 public_folder: "/assets/images/uploads"
@@ -35,7 +32,7 @@ collections:
           - label: "Photos"
             name: "photos"
             widget: "list"
-            summary: "{{fields.alt}}"
+            summary: "{{fields.src}}"
             fields:
               - { label: "Image", name: "src", widget: "image" }
               - { label: "Alt text", name: "alt", widget: "string", default: "Vermont Dodgeball event photo" }
