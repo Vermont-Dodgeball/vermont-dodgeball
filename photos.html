@@ -94,24 +94,7 @@
     <main id="content" class="site-content">
         <div class="container">
             <article>
-                <div class="photo-grid">
-
-                    <div class="photo-item">
-                        <img src="assets/images/event_images/11049589_813506993990_4959144656143882501_o.jpg" alt="Photo 2">
-                    </div>
-                    <div class="photo-item">
-                        <img src="assets/images/event_images/12357196_813507153670_2262287993943063220_o.jpg" alt="Photo 3">
-                    </div>
-                    <div class="photo-item">
-                        <img src="assets/images/event_images/12370872_813507902170_2163309519255899392_o.jpg" alt="Photo 5">
-                    </div>
-                    <div class="photo-item">
-                        <img src="assets/images/event_images/12375014_813506779420_5667679698125042210_o.jpg" alt="Photo 6">
-                    </div>
-                    <div class="photo-item">
-                        <img src="assets/images/event_images/15975250_1823576351217171_7058568255107167939_o.jpg" alt="Photo 7">
-                    </div>
-
+                <div class="photo-grid" id="photo-grid"></div>
             </article>
         </div>
     </main>
@@ -124,6 +107,24 @@
     <script>
         const currentYear = new Date().getFullYear();
         document.getElementById("currentYear").innerHTML = currentYear;
+    </script>
+    <script>
+        fetch('data/photos.json')
+            .then(response => response.json())
+            .then(data => {
+                const grid = document.getElementById('photo-grid');
+                data.photos.forEach(photo => {
+                    const item = document.createElement('div');
+                    item.className = 'photo-item';
+
+                    const img = document.createElement('img');
+                    img.src = photo.src;
+                    img.alt = photo.alt;
+
+                    item.appendChild(img);
+                    grid.appendChild(item);
+                });
+            });
     </script>
 </body>
 </html>
