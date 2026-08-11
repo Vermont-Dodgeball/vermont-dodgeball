@@ -12,12 +12,12 @@
 
 const CALENDAR_CONFIG = {
     // The calendar's ID, e.g. "abc123@group.calendar.google.com".
-    calendarId: 'REPLACE_WITH_CALENDAR_ID',
+    calendarId: 'vermontdodgeball@gmail.com',
 
     // A Google Cloud API key restricted to the Calendar API and to the
     // vtdodgeball.com referrer. This ships in the page and is meant to be
     // public — it only grants read access to an already-public calendar.
-    apiKey: 'REPLACE_WITH_API_KEY',
+    apiKey: 'AIzaSyDxcKzA_xw8pxHQpk1h5ZRBOm-77-4RuFg',
 
     // Games are scheduled in local Vermont time. Formatting explicitly in
     // this zone keeps the date correct for visitors in other timezones.

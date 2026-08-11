@@ -46,10 +46,26 @@ the league is tidier than using a personal one.)
 
 ### 3. Create an API key
 
+You want an **API key** here — not a service account, and not an OAuth client.
+
+An API key identifies the project rather than a person, and only reaches data
+that is already public, which is why it is safe to ship in a page. A service
+account is a robot identity with a private key that can be granted *write*
+access; putting one in `js/calendar.js` would publish a credential capable of
+changing the calendar. Service accounts belong to Phase 2, stored as a secret
+on the server side.
+
 1. Go to the [Google Cloud Console](https://console.cloud.google.com) and
    create a project (e.g. `vermont-dodgeball-site`).
 2. **APIs & Services → Library** → search **Google Calendar API** → **Enable**.
-3. **APIs & Services → Credentials → Create credentials → API key**.
+3. Go to [APIs & Services → Credentials](https://console.cloud.google.com/apis/credentials)
+   → **+ Create credentials** → **API key**.
+
+   If **API key** isn't in that menu, you're most likely on the adjacent
+   **Google Auth Platform** page (formerly "OAuth consent screen"), which only
+   creates OAuth clients — use the direct link above. Also check a project is
+   selected in the top bar. If you end up in the "Help me choose" wizard,
+   answering *Google Calendar API* and *Public data* arrives at an API key.
 4. Restrict it — an unrestricted key is the one thing here worth being careful
    about:
    - **Application restrictions → Websites**, add `https://vtdodgeball.com/*`
