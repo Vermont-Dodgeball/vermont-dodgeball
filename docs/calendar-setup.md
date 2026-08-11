@@ -101,6 +101,43 @@ entry.
 Only events **starting in the future** appear; a game in progress or just
 finished drops off automatically.
 
+## Cancelling a game, or skipping a week
+
+**Don't delete the event.** Deleting is silent: the site quietly rolls to the
+next date, and anyone subscribed to the calendar just sees the entry disappear
+with no notice and no explanation. Someone who knows games are weekly can
+easily miss that this week's is gone — and end up at a locked gym.
+
+Instead, rename the event. Two prefixes:
+
+| Title | Use for |
+| --- | --- |
+| `CANCELLED: burst pipe in the gym` | Something unforeseen — snow, a closed gym |
+| `NO DODGEBALL: holiday break` | A week you're skipping on purpose |
+
+The reason after the colon is optional (`CANCELLED` on its own works) but it's
+the useful part — it tells people whether this is a one-off or the start of a
+break. Either spelling of *cancelled* is accepted.
+
+For a **planned** gap, create an event rather than leaving the date empty. An
+absent event is invisible; a `NO DODGEBALL` entry actively tells people the
+week is off, both on the site and in their own calendar app.
+
+What the site does with them:
+
+- If the **next** date is off, a notice leads the card and the "When" line
+  skips to the next date that *is* happening. Cancellations are shown in the
+  accent colour; planned skips are muted, since one is news and the other
+  isn't.
+- A date further out shows in "Also coming up" struck through, labelled
+  *Cancelled* or *No dodgeball* with the reason.
+- A cancelled game stays on the page until **8:00 PM** that night, so someone
+  checking around game time still sees why nothing is happening.
+
+**One rule to keep in mind:** the match is on how the title *starts*. Don't
+begin a real game's title with these words — an event called
+"No Dodgeball Club social" would be read as a skipped week.
+
 ## Troubleshooting
 
 Open the browser console on the homepage — failures are logged there rather

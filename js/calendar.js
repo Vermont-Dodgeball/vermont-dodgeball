@@ -24,10 +24,27 @@ const CALENDAR_CONFIG = {
     timeZone: 'America/New_York',
 
     // How many dates to list after the next one.
-    upcomingCount: 3,
+    upcomingCount: 2,
+
+    // Hour (local, 24h) at which a game stops being shown on its own day.
+    // Google filters on an event's end time, so without this a game would
+    // vanish the moment it finished; holding it until 20:00 keeps a
+    // cancellation notice up for anyone checking around game time.
+    hideAfterHour: 20,
 };
 
 const CALENDAR_PLACEHOLDER = 'REPLACE_WITH_';
+
+// Event titles starting with one of these mark a night with no dodgeball;
+// whatever follows the prefix is shown as the reason. "CANCELLED" is for the
+// unforeseen (snow, a closed gym), "NO DODGEBALL" for a planned skip.
+// "no game" is tolerated as well: if the wrong habit phrase gets typed, a
+// missed match would advertise the night as a normal game, which is the more
+// damaging way to be wrong.
+const NOT_HAPPENING_PATTERNS = [
+    { kind: 'cancelled', label: 'Cancelled', pattern: /^\s*(cancelled|canceled)\b[\s:—–-]*/i },
+    { kind: 'skipped', label: 'No dodgeball', pattern: /^\s*(no dodgeball|no game)\b[\s:—–-]*/i },
+];
 
 /**
  * All-day events carry a bare "YYYY-MM-DD". Parsing that as UTC and
@@ -81,6 +98,87 @@ function describeEvent(event) {
     return time ? `${day} · ${time}` : day;
 }
 
+/* ---------------------------------------------------------------
+   Timezone helpers
+
+   Working out when 8pm falls in Vermont needs the zone's offset at that
+   moment, which JavaScript will not give directly. Formatting an instant
+   into the zone and reading it back as if it were UTC recovers the offset.
+   --------------------------------------------------------------- */
+
+function timeZoneOffsetMs(instant, timeZone) {
+    const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone,
+        hour12: false,
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+    }).formatToParts(instant).reduce((accumulator, part) => {
+        accumulator[part.type] = part.value;
+        return accumulator;
+    }, {});
+
+    const asUtc = Date.UTC(
+        Number(parts.year),
+        Number(parts.month) - 1,
+        Number(parts.day),
+        Number(parts.hour) % 24,   // some engines render midnight as "24"
+        Number(parts.minute),
+        Number(parts.second),
+    );
+
+    return asUtc - instant.getTime();
+}
+
+/** The calendar date an instant falls on, in the given zone. */
+function localDateParts(instant, timeZone) {
+    const [year, month, day] = new Intl.DateTimeFormat('en-CA', {
+        timeZone, year: 'numeric', month: '2-digit', day: '2-digit',
+    }).format(instant).split('-');
+
+    return { year: Number(year), month: Number(month), day: Number(day) };
+}
+
+/** The instant at which `hour` o'clock arrives on a given local date. */
+function zonedInstant({ year, month, day }, hour, timeZone) {
+    const naive = Date.UTC(year, month - 1, day, hour);
+    // The offset is sampled an hour or so either side of the target, which
+    // only matters on a DST boundary — those land at 2am on a Sunday, never
+    // on a game night.
+    return new Date(naive - timeZoneOffsetMs(new Date(naive), timeZone));
+}
+
+/** When this event should stop being shown: `hideAfterHour` on its own day. */
+function visibleUntil(event) {
+    const { date, allDay } = parseEventStart(event);
+    const parts = localDateParts(date, allDay ? 'UTC' : CALENDAR_CONFIG.timeZone);
+    return zonedInstant(parts, CALENDAR_CONFIG.hideAfterHour, CALENDAR_CONFIG.timeZone);
+}
+
+/**
+ * Returns { kind, label, reason } when an event is titled as not happening,
+ * otherwise null. The reason may be empty if the editor gave no explanation.
+ */
+function readCancellation(event) {
+    const summary = event.summary || '';
+
+    for (const { kind, label, pattern } of NOT_HAPPENING_PATTERNS) {
+        const marker = summary.match(pattern);
+        if (marker) {
+            return { kind, label, reason: summary.slice(marker[0].length).trim() };
+        }
+    }
+
+    return null;
+}
+
+/** "Cancelled Monday, August 17 — snow" */
+function describeCancellation(event) {
+    const { label, reason } = readCancellation(event);
+    // The start time is noise for a night that isn't happening — day only.
+    const day = formatDay(event, { weekday: 'long', month: 'long', day: 'numeric' });
+    return reason ? `${label} ${day} — ${reason}` : `${label} ${day}`;
+}
+
 function renderUpcoming(events) {
     const container = document.getElementById('next-game-upcoming');
     const list = document.getElementById('next-game-upcoming-list');
@@ -89,11 +187,45 @@ function renderUpcoming(events) {
 
     events.forEach(event => {
         const item = document.createElement('li');
-        item.textContent = describeEvent(event);
+        const cancellation = readCancellation(event);
+
+        if (!cancellation) {
+            item.textContent = describeEvent(event);
+        } else {
+            // Struck-through text alone would not survive a screen reader or
+            // a colourblind reader, so the word carries the meaning and the
+            // styling only reinforces it.
+            const struck = document.createElement('s');
+            struck.textContent = describeEvent(event);
+
+            const tag = document.createElement('span');
+            tag.className = 'next-game-cancelled-tag';
+            tag.textContent = cancellation.reason
+                ? `${cancellation.label} — ${cancellation.reason}`
+                : cancellation.label;
+
+            item.append(struck, ' ', tag);
+        }
+
         list.appendChild(item);
     });
 
     container.hidden = events.length === 0;
+}
+
+function renderAlerts(cancelledEvents) {
+    const container = document.getElementById('next-game-alerts');
+    container.replaceChildren();
+
+    cancelledEvents.forEach(event => {
+        const alert = document.createElement('p');
+        alert.className = 'next-game-alert';
+        alert.dataset.kind = readCancellation(event).kind;
+        alert.textContent = describeCancellation(event);
+        container.appendChild(alert);
+    });
+
+    container.hidden = cancelledEvents.length === 0;
 }
 
 function renderNextGame(events) {
@@ -101,14 +233,28 @@ function renderNextGame(events) {
         return;
     }
 
+    const firstPlayable = events.findIndex(event => !readCancellation(event));
+
+    // Cancellations before the next playable game are the urgent bit — they
+    // are what stops someone driving to a locked gym — so they lead.
+    renderAlerts(firstPlayable === -1 ? events : events.slice(0, firstPlayable));
+
+    if (firstPlayable === -1) {
+        // Everything in range is cancelled. The alerts say so; leave the
+        // "When" line on its static fallback rather than inventing a date.
+        renderUpcoming([]);
+        document.getElementById('next-game').hidden = false;
+        return;
+    }
+
     const whenElement = document.getElementById('next-game-when');
-    whenElement.textContent = describeEvent(events[0]);
+    whenElement.textContent = describeEvent(events[firstPlayable]);
 
     // Tells the data/about.json handler not to overwrite this with the
     // static fallback, whichever of the two requests finishes first.
     whenElement.dataset.source = 'calendar';
 
-    renderUpcoming(events.slice(1));
+    renderUpcoming(events.slice(firstPlayable + 1, firstPlayable + 1 + CALENDAR_CONFIG.upcomingCount));
 
     // The card is normally revealed by the about.json handler; do it here
     // too so real schedule data still shows if that request failed.
@@ -123,12 +269,18 @@ function loadCalendar() {
         return;
     }
 
+    const now = new Date();
+
+    // Ask from the start of today rather than "now", so a game still counts
+    // as upcoming after it has finished; visibleUntil() applies the real
+    // cutoff below. Cancelled entries and already-played games both eat into
+    // the results, so fetch more than we intend to show.
     const params = new URLSearchParams({
         key: apiKey,
-        timeMin: new Date().toISOString(),
+        timeMin: zonedInstant(localDateParts(now, CALENDAR_CONFIG.timeZone), 0, CALENDAR_CONFIG.timeZone).toISOString(),
         singleEvents: 'true',   // required for orderBy=startTime, and expands recurrences
         orderBy: 'startTime',
-        maxResults: String(upcomingCount + 1),
+        maxResults: String(upcomingCount + 5),
     });
 
     const endpoint = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?${params}`;
@@ -140,7 +292,12 @@ function loadCalendar() {
             }
             return response.json();
         })
-        .then(data => renderNextGame(data.items || []))
+        .then(data => {
+            const events = (data.items || [])
+                .filter(event => event.start)
+                .filter(event => now < visibleUntil(event));
+            renderNextGame(events);
+        })
         .catch(error => console.error('Could not load the game calendar:', error));
 }
 
