@@ -95,6 +95,10 @@
                         <dd id="next-game-cost"></dd>
                     </div>
                 </dl>
+                <div class="next-game-upcoming" id="next-game-upcoming" hidden>
+                    <p class="next-game-upcoming-label">Also coming up</p>
+                    <ul id="next-game-upcoming-list"></ul>
+                </div>
                 <p class="next-game-note" id="next-game-note"></p>
             </section>
 
@@ -138,10 +142,16 @@
                 document.getElementById('hero-tagline').textContent = about.tagline;
 
                 // The card stays hidden unless the data file describes a game.
-                // The Google Calendar integration will populate these fields.
                 if (about.nextGame) {
                     document.getElementById('next-game-heading').textContent = about.nextGame.heading;
-                    document.getElementById('next-game-when').textContent = about.nextGame.when;
+
+                    // js/calendar.js fills this in from the real schedule and
+                    // marks it; these values are the fallback when it can't.
+                    const whenElement = document.getElementById('next-game-when');
+                    if (whenElement.dataset.source !== 'calendar') {
+                        whenElement.textContent = about.nextGame.when;
+                    }
+
                     setWhere(about.nextGame.where, about.nextGame.whereUrl);
                     document.getElementById('next-game-cost').textContent = about.nextGame.cost;
                     document.getElementById('next-game-note').textContent = about.nextGame.note;
@@ -163,6 +173,7 @@
             })
             .catch(error => console.error('Could not load about content:', error));
 
+
         // Renders the location as a map link when the data file supplies a URL,
         // and as plain text when it does not.
         function setWhere(where, whereUrl) {
@@ -182,5 +193,6 @@
             target.replaceChildren(link);
         }
     </script>
+    <script src="js/calendar.js"></script>
 </body>
 </html>
