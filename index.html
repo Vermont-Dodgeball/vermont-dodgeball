@@ -9,7 +9,7 @@
 </head>
 <body>
     <a class="skip-link" href="#content">Skip to content</a>
-    <div class="site-wrapper">
+    <div class="site-content">
 
     <header class="site-header">
         <div class="header-wrap">
@@ -66,7 +66,7 @@
                     <h4 class="hero-text" id="hero-tagline"></h4>
                 </div>
             </div>
-    <main id="content" class="site-main">
+    <main id="content" class="site-content">
         <div class="container">
 
             <article>
@@ -87,11 +87,12 @@
             </article>
         </div>
     </main>
-    </div>
 
     <footer class="site-footer">
+
         <p>Copyright © <span id="currentYear"></span> Vermont Dodgeball | Burlington, Vermont</p>
     </footer>
+    </div>
     <script>
         const currentYear = new Date().getFullYear();
         document.getElementById("currentYear").innerHTML = currentYear;
