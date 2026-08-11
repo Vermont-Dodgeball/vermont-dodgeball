@@ -1,0 +1,38 @@
+backend:
+  name: github
+  repo: Vermont-Dodgeball/vermont-dodgeball
+  branch: main
+  # Login requires a free OAuth proxy worker. Until it's deployed and set
+  # here, signing in will fail. Setup steps: see README.md in this folder.
+  base_url: https://sveltia-cms-auth.clayton-noyes.workers.dev
+
+media_folder: "assets/images/uploads"
+public_folder: "/assets/images/uploads"
+
+collections:
+  - name: "about"
+    label: "About Page"
+    files:
+      - name: "about"
+        label: "About Content"
+        file: "data/about.json"
+        format: json
+        fields:
+          - { label: "Hero Tagline", name: "tagline", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "photos"
+    label: "Photo Gallery"
+    files:
+      - name: "photos"
+        label: "Photos"
+        file: "data/photos.json"
+        format: json
+        fields:
+          - label: "Photos"
+            name: "photos"
+            widget: "list"
+            summary: "{{fields.src}}"
+            fields:
+              - { label: "Image", name: "src", widget: "image" }
+              - { label: "Alt text", name: "alt", widget: "string", default: "Vermont Dodgeball event photo" }
