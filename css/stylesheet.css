@@ -27,7 +27,10 @@
     --text-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
     --text-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.375rem);
     --text-title: clamp(1.6rem, 1.25rem + 1.6vw, 2.25rem);
-    --text-site-title: clamp(1.6rem, 1.15rem + 2vw, 2.6rem);
+    /* Scales down further on phones than the other headings: the branding
+       block has to share its row with a logo that stays roughly fixed. */
+    --text-site-title: clamp(1.25rem, 0.85rem + 1.7vw, 2.6rem);
+    --text-site-description: clamp(0.75rem, 0.68rem + 0.3vw, 0.9375rem);
     --text-hero: clamp(1.75rem, 1.1rem + 2.8vw, 3rem);
 
     /* Spacing */
@@ -157,9 +160,16 @@ a:hover {
 .header-grid {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: var(--space-md);
     flex-wrap: wrap;
+}
+
+/* The social links and the nav are separate flex children, so space-between
+   spread them across the whole row and stranded the nav on the far edge.
+   Pushing branding away with an auto margin instead leaves them adjacent, so
+   they read as one group and wrap as one. */
+.site-branding {
+    margin-right: auto;
 }
 
 .site-branding {
@@ -170,7 +180,9 @@ a:hover {
 }
 
 .site-logo-img img {
-    width: clamp(56px, 8vw, 88px);
+    /* Deliberately narrow range — the logo holds its size while the wordmark
+       beside it does the shrinking. */
+    width: clamp(60px, 6vw, 76px);
     height: auto;
     border-radius: var(--radius-md);
     display: block;
@@ -193,7 +205,7 @@ a:hover {
 }
 
 .site-description {
-    font-size: var(--text-sm);
+    font-size: var(--text-site-description);
     color: var(--color-text-muted);
     margin-top: 2px;
 }
@@ -585,17 +597,26 @@ a:hover {
    --------------------------------------------------------------- */
 
 @media (max-width: 544px) {
-    .site-title {
-        display: none;
+    /* Below this width the four items cannot share a line. Give branding the
+       whole first row so the break is deliberate, rather than letting one
+       social icon wrap on its own and split the group. */
+    .header-grid {
+        gap: var(--space-xs);
+    }
+
+    .site-branding {
+        flex: 1 0 100%;
+        margin-right: 0;
+        gap: var(--space-sm);
+    }
+
+    .main-menu a {
+        padding: var(--space-xs) var(--space-sm);
     }
 
     .hero {
         margin-left: 0;
         margin-right: 0;
         border-radius: 0;
-    }
-
-    .site-branding {
-        gap: var(--space-sm);
     }
 }
