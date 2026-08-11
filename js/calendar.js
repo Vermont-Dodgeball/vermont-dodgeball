@@ -24,7 +24,7 @@ const CALENDAR_CONFIG = {
     timeZone: 'America/New_York',
 
     // How many dates to list after the next one.
-    upcomingCount: 3,
+    upcomingCount: 2,
 
     // Hour (local, 24h) at which a game stops being shown on its own day.
     // Google filters on an event's end time, so without this a game would
