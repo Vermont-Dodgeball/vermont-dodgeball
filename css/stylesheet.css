@@ -27,7 +27,10 @@
     --text-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
     --text-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.375rem);
     --text-title: clamp(1.6rem, 1.25rem + 1.6vw, 2.25rem);
-    --text-site-title: clamp(1.6rem, 1.15rem + 2vw, 2.6rem);
+    /* Scales down further on phones than the other headings: the branding
+       block has to share its row with a logo that stays roughly fixed. */
+    --text-site-title: clamp(1.25rem, 0.85rem + 1.7vw, 2.6rem);
+    --text-site-description: clamp(0.75rem, 0.68rem + 0.3vw, 0.9375rem);
     --text-hero: clamp(1.75rem, 1.1rem + 2.8vw, 3rem);
 
     /* Spacing */
@@ -145,9 +148,18 @@ a:hover {
    Header
    --------------------------------------------------------------- */
 
+/* No border-bottom: the <hr> below is the visible divider, and a second one
+   sat redundantly beneath it. */
 .site-header {
-    border-bottom: 1px solid var(--color-border);
     padding: var(--space-lg) 0;
+}
+
+/* This rule's only job is the gap above the divider. The <hr> itself has no
+   styling of its own, so its ~8px default margin left it crowding the
+   branding; the gap now opens up as the viewport widens, where the header
+   has room to breathe and the tightness was most obvious. */
+.site-header hr {
+    margin-top: clamp(var(--space-sm), 2.5vw, var(--space-xl));
 }
 
 .header-wrap {
@@ -157,7 +169,6 @@ a:hover {
 .header-grid {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: var(--space-md);
     flex-wrap: wrap;
 }
@@ -167,10 +178,37 @@ a:hover {
     align-items: center;
     gap: var(--space-md);
     min-width: 0;
+    /* Pushes the actions to the far side without space-between, which would
+       also have spread the actions apart from each other. */
+    margin-right: auto;
+}
+
+/* The social links and the nav were separate flex children, so once the row
+   ran out of space the nav wrapped on its own and left the icons behind.
+   Grouping them into one child means they cannot be split: they sit together
+   at every width, and drop to the next line together. */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+/* Keep the mark from being squeezed when the row runs short of space; the
+   wordmark next to it is what should give way. */
+.site-logo-img {
+    flex-shrink: 0;
 }
 
 .site-logo-img img {
-    width: clamp(56px, 8vw, 88px);
+    /* Deliberately narrow range — the logo holds its size while the wordmark
+       beside it does the shrinking. */
+    width: clamp(60px, 6vw, 76px);
+    /* Floors it at 60x60. Needed as well as the clamp: the global
+       img { max-width: 100% } would otherwise scale it below that inside a
+       narrow container, and min-width outranks max-width. Height follows on
+       its own — the asset is square — so pinning it too would only risk
+       distortion if the logo were ever replaced with a different shape. */
+    min-width: 60px;
     height: auto;
     border-radius: var(--radius-md);
     display: block;
@@ -193,9 +231,16 @@ a:hover {
 }
 
 .site-description {
-    font-size: var(--text-sm);
+    font-size: var(--text-site-description);
     color: var(--color-text-muted);
     margin-top: 2px;
+    /* Tighter than the body's 1.65, which is set for paragraphs of prose. On
+       the two lines this wraps to on a narrow screen, that spacing reads as
+       two separate statements rather than one phrase that happened to break.
+       Left-aligned deliberately: the logo, the wordmark and both of these
+       lines share a left edge, and centring would trade that away for a
+       tidier right edge on lines that are already near-equal length. */
+    line-height: 1.35;
 }
 
 .social-link {
@@ -584,18 +629,41 @@ a:hover {
    Small screens
    --------------------------------------------------------------- */
 
+/* Below this the header needs two rows. Claiming a full-width row for the
+   actions makes that deterministic — it no longer depends on exactly where
+   the wordmark happens to wrap — and, more usefully, gives the nav an edge to
+   anchor against. Kept separate from the 544px block below so that the
+   spacing tweaks there are not dragged to a different breakpoint. */
+@media (max-width: 576px) {
+    .header-actions {
+        flex: 1 0 100%;
+    }
+
+    /* Social links hold the logo's left edge; the nav takes the far side, so
+       the row is weighted at both ends instead of bunched to the left. */
+    .header-actions nav {
+        margin-left: auto;
+    }
+}
+
 @media (max-width: 544px) {
-    .site-title {
-        display: none;
+    /* Branding and actions now wrap as whole units on their own, so this only
+       tightens the spacing rather than dictating where the break happens. */
+    .header-grid {
+        gap: var(--space-xs);
+    }
+
+    .site-branding {
+        gap: var(--space-sm);
+    }
+
+    .main-menu a {
+        padding: var(--space-xs) var(--space-sm);
     }
 
     .hero {
         margin-left: 0;
         margin-right: 0;
         border-radius: 0;
-    }
-
-    .site-branding {
-        gap: var(--space-sm);
     }
 }
