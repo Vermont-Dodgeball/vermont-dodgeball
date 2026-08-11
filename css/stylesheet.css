@@ -148,8 +148,9 @@ a:hover {
    Header
    --------------------------------------------------------------- */
 
+/* No border-bottom: the <hr> below is the visible divider, and a second one
+   sat redundantly beneath it. */
 .site-header {
-    border-bottom: 1px solid var(--color-border);
     padding: var(--space-lg) 0;
 }
 
@@ -627,6 +628,23 @@ a:hover {
 /* ---------------------------------------------------------------
    Small screens
    --------------------------------------------------------------- */
+
+/* Below this the header needs two rows. Claiming a full-width row for the
+   actions makes that deterministic — it no longer depends on exactly where
+   the wordmark happens to wrap — and, more usefully, gives the nav an edge to
+   anchor against. Kept separate from the 544px block below so that the
+   spacing tweaks there are not dragged to a different breakpoint. */
+@media (max-width: 576px) {
+    .header-actions {
+        flex: 1 0 100%;
+    }
+
+    /* Social links hold the logo's left edge; the nav takes the far side, so
+       the row is weighted at both ends instead of bunched to the left. */
+    .header-actions nav {
+        margin-left: auto;
+    }
+}
 
 @media (max-width: 544px) {
     /* Branding and actions now wrap as whole units on their own, so this only
