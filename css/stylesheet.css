@@ -225,6 +225,13 @@ a:hover {
     font-size: var(--text-site-description);
     color: var(--color-text-muted);
     margin-top: 2px;
+    /* Tighter than the body's 1.65, which is set for paragraphs of prose. On
+       the two lines this wraps to on a narrow screen, that spacing reads as
+       two separate statements rather than one phrase that happened to break.
+       Left-aligned deliberately: the logo, the wordmark and both of these
+       lines share a left edge, and centring would trade that away for a
+       tidier right edge on lines that are already near-equal length. */
+    line-height: 1.35;
 }
 
 .social-link {
