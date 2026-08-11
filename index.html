@@ -4,8 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>About Vermont Dodgeball – Vermont Dodgeball</title>
+    <meta name="description" content="Vermont Dodgeball is a pickup dodgeball league playing every Monday night in Burlington. No team needed — just show up. $5 per game.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Vermont Dodgeball">
+    <meta property="og:title" content="Vermont Dodgeball – Vermont's Pickup Dodgeball League">
+    <meta property="og:description" content="Playing every Monday night in Burlington. No team needed — just show up. $5 per game.">
+    <meta property="og:url" content="https://vtdodgeball.com/">
+    <meta property="og:image" content="https://vtdodgeball.com/assets/images/centerpiece.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+
     <link rel="icon" type="image/jpeg" href="favicon.jpg" sizes="32x32">
-  <link rel="stylesheet" href="css/sylesheet.css">
+    <link rel="stylesheet" href="css/stylesheet.css">
 </head>
 <body>
     <a class="skip-link" href="#content">Skip to content</a>
@@ -69,6 +79,25 @@
     <main id="content" class="site-main">
         <div class="container">
 
+            <section class="next-game" id="next-game" aria-labelledby="next-game-heading" hidden>
+                <h2 class="next-game-heading" id="next-game-heading">Next Game</h2>
+                <dl class="next-game-details">
+                    <div>
+                        <dt>When</dt>
+                        <dd id="next-game-when"></dd>
+                    </div>
+                    <div>
+                        <dt>Where</dt>
+                        <dd id="next-game-where"></dd>
+                    </div>
+                    <div>
+                        <dt>Cost</dt>
+                        <dd id="next-game-cost"></dd>
+                    </div>
+                </dl>
+                <p class="next-game-note" id="next-game-note"></p>
+            </section>
+
             <article>
                 <h1 class="entry-title">About Vermont Dodgeball</h1>
 
@@ -108,6 +137,17 @@
             .then(about => {
                 document.getElementById('hero-tagline').textContent = about.tagline;
 
+                // The card stays hidden unless the data file describes a game.
+                // The Google Calendar integration will populate these fields.
+                if (about.nextGame) {
+                    document.getElementById('next-game-heading').textContent = about.nextGame.heading;
+                    document.getElementById('next-game-when').textContent = about.nextGame.when;
+                    setWhere(about.nextGame.where, about.nextGame.whereUrl);
+                    document.getElementById('next-game-cost').textContent = about.nextGame.cost;
+                    document.getElementById('next-game-note').textContent = about.nextGame.note;
+                    document.getElementById('next-game').hidden = false;
+                }
+
                 const aboutBody = document.getElementById('about-body');
 
                 // Fall back to plain paragraphs if the Markdown library is unreachable.
@@ -122,6 +162,25 @@
                 }
             })
             .catch(error => console.error('Could not load about content:', error));
+
+        // Renders the location as a map link when the data file supplies a URL,
+        // and as plain text when it does not.
+        function setWhere(where, whereUrl) {
+            const target = document.getElementById('next-game-where');
+            const isWebLink = typeof whereUrl === 'string' && /^https?:\/\//.test(whereUrl);
+
+            if (!isWebLink) {
+                target.textContent = where;
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.href = whereUrl;
+            link.textContent = where;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            target.replaceChildren(link);
+        }
     </script>
 </body>
 </html>

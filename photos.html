@@ -4,55 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Photos – Vermont Dodgeball</title>
+    <meta name="description" content="Photos from Vermont Dodgeball's Monday night pickup games in Burlington.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Vermont Dodgeball">
+    <meta property="og:title" content="Photos – Vermont Dodgeball">
+    <meta property="og:description" content="Photos from Vermont Dodgeball's Monday night pickup games in Burlington.">
+    <meta property="og:url" content="https://vtdodgeball.com/photos">
+    <meta property="og:image" content="https://vtdodgeball.com/assets/images/centerpiece.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+
     <link rel="icon" type="image/jpeg" href="favicon.jpg" sizes="32x32">
-  <link rel="stylesheet" href="css/sylesheet.css">
-  <style>
-        .photo-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .photo-item {
-            aspect-ratio: 1;
-            overflow: hidden;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.3s ease;
-        }
-
-        /* Zoom inside the tile: scaling the tile itself overlapped its neighbours. */
-        .photo-item:hover img {
-            transform: scale(1.05);
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .photo-item img {
-                transition: none;
-            }
-        }
-
-        /* Responsive - 2 columns on tablets */
-        @media (max-width: 768px) {
-            .photo-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Responsive - 1 column on mobile */
-        @media (max-width: 480px) {
-            .photo-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-  </style>
+    <link rel="stylesheet" href="css/stylesheet.css">
 </head>
 <body>
     <a class="skip-link" href="#content">Skip to content</a>
@@ -107,8 +70,9 @@
     </header>
 
     <main id="content" class="site-main">
-        <div class="container">
+        <div class="container container-wide">
             <article>
+                <h1 class="entry-title">Photos</h1>
                 <div class="photo-grid" id="photo-grid"></div>
             </article>
         </div>
@@ -118,6 +82,11 @@
     <footer class="site-footer">
         <p>Copyright © <span id="currentYear"></span> Vermont Dodgeball | Burlington, Vermont</p>
     </footer>
+
+    <dialog class="lightbox" id="lightbox" aria-label="Enlarged photo">
+        <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close photo">&times;</button>
+        <img id="lightbox-image" src="" alt="">
+    </dialog>
     <script>
         const currentYear = new Date().getFullYear();
         document.getElementById("currentYear").innerHTML = currentYear;
@@ -133,18 +102,46 @@
             .then(data => {
                 const grid = document.getElementById('photo-grid');
                 data.photos.forEach(photo => {
-                    const item = document.createElement('div');
+                    // A button rather than a div, so the lightbox is reachable
+                    // by keyboard as well as by mouse.
+                    const item = document.createElement('button');
+                    item.type = 'button';
                     item.className = 'photo-item';
+                    item.setAttribute('aria-label', `Enlarge photo: ${photo.alt}`);
 
                     const img = document.createElement('img');
                     img.src = photo.src;
                     img.alt = photo.alt;
+                    img.loading = 'lazy';
+                    img.decoding = 'async';
 
                     item.appendChild(img);
+                    item.addEventListener('click', () => openLightbox(photo));
                     grid.appendChild(item);
                 });
             })
             .catch(error => console.error('Could not load photos:', error));
+
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightbox-image');
+
+        function openLightbox(photo) {
+            lightboxImage.src = photo.src;
+            lightboxImage.alt = photo.alt;
+            lightbox.showModal();
+        }
+
+        // Esc and focus restoration come free with <dialog>; this covers
+        // the close button and clicks on the backdrop around the image.
+        document.getElementById('lightbox-close').addEventListener('click', () => lightbox.close());
+        lightbox.addEventListener('click', event => {
+            if (event.target === lightbox) {
+                lightbox.close();
+            }
+        });
+        lightbox.addEventListener('close', () => {
+            lightboxImage.src = '';
+        });
     </script>
 </body>
 </html>

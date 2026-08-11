@@ -19,6 +19,18 @@ collections:
         format: json
         fields:
           - { label: "Hero Tagline", name: "tagline", widget: "string" }
+          - label: "Next Game Card"
+            name: "nextGame"
+            widget: "object"
+            required: false
+            collapsed: false
+            fields:
+              - { label: "Heading", name: "heading", widget: "string", default: "Next Game" }
+              - { label: "When", name: "when", widget: "string" }
+              - { label: "Where", name: "where", widget: "string" }
+              - { label: "Where link (Google Maps)", name: "whereUrl", widget: "string", required: false }
+              - { label: "Cost", name: "cost", widget: "string" }
+              - { label: "Note", name: "note", widget: "string", required: false }
           - { label: "Body", name: "body", widget: "markdown" }
 
   - name: "photos"
