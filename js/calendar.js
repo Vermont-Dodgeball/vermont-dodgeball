@@ -179,6 +179,32 @@ function describeCancellation(event) {
     return reason ? `${label} ${day} — ${reason}` : `${label} ${day}`;
 }
 
+/**
+ * "Add these dates to your calendar: Google Calendar · Apple or Outlook"
+ *
+ * Both links are derived from the configured calendar ID so there is one
+ * source of truth. The Apple/Outlook link uses the webcal: scheme on purpose:
+ * the same URL over https downloads a one-off snapshot, so the subscriber
+ * would never see a game added or cancelled afterwards.
+ */
+function renderSubscribeLinks() {
+    const calendarId = encodeURIComponent(CALENDAR_CONFIG.calendarId);
+    const container = document.getElementById('next-game-subscribe');
+
+    const google = document.createElement('a');
+    google.href = `https://calendar.google.com/calendar/render?cid=${calendarId}`;
+    google.textContent = 'Google Calendar';
+    google.target = '_blank';
+    google.rel = 'noopener noreferrer';
+
+    const subscribe = document.createElement('a');
+    subscribe.href = `webcal://calendar.google.com/calendar/ical/${calendarId}/public/basic.ics`;
+    subscribe.textContent = 'Apple or Outlook';
+
+    container.replaceChildren('Get these dates in your own calendar: ', google, ' · ', subscribe);
+    container.hidden = false;
+}
+
 function renderUpcoming(events) {
     const container = document.getElementById('next-game-upcoming');
     const list = document.getElementById('next-game-upcoming-list');
@@ -268,6 +294,10 @@ function loadCalendar() {
         // Not set up yet — leave the static values in place and stay quiet.
         return;
     }
+
+    // Subscribing only needs the calendar to be public, not this request to
+    // succeed, so offer it up front rather than inside the success path.
+    renderSubscribeLinks();
 
     const now = new Date();
 
