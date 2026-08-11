@@ -164,19 +164,24 @@ a:hover {
     flex-wrap: wrap;
 }
 
-/* The social links and the nav are separate flex children, so space-between
-   spread them across the whole row and stranded the nav on the far edge.
-   Pushing branding away with an auto margin instead leaves them adjacent, so
-   they read as one group and wrap as one. */
-.site-branding {
-    margin-right: auto;
-}
-
 .site-branding {
     display: flex;
     align-items: center;
     gap: var(--space-md);
     min-width: 0;
+    /* Pushes the actions to the far side without space-between, which would
+       also have spread the actions apart from each other. */
+    margin-right: auto;
+}
+
+/* The social links and the nav were separate flex children, so once the row
+   ran out of space the nav wrapped on its own and left the icons behind.
+   Grouping them into one child means they cannot be split: they sit together
+   at every width, and drop to the next line together. */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
 }
 
 .site-logo-img img {
@@ -597,16 +602,13 @@ a:hover {
    --------------------------------------------------------------- */
 
 @media (max-width: 544px) {
-    /* Below this width the four items cannot share a line. Give branding the
-       whole first row so the break is deliberate, rather than letting one
-       social icon wrap on its own and split the group. */
+    /* Branding and actions now wrap as whole units on their own, so this only
+       tightens the spacing rather than dictating where the break happens. */
     .header-grid {
         gap: var(--space-xs);
     }
 
     .site-branding {
-        flex: 1 0 100%;
-        margin-right: 0;
         gap: var(--space-sm);
     }
 
