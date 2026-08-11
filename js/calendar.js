@@ -12,7 +12,7 @@
 
 const CALENDAR_CONFIG = {
     // The calendar's ID, e.g. "abc123@group.calendar.google.com".
-    calendarId: 'vermontdodgeball@gmail.com',
+    calendarId: 'ee18b76dc98c4c425806765d127b9a71a3f376616ffc758710d55be684a66225@group.calendar.google.com',
 
     // A Google Cloud API key restricted to the Calendar API and to the
     // vtdodgeball.com referrer. This ships in the page and is meant to be
