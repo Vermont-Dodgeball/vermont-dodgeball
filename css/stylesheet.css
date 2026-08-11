@@ -153,6 +153,14 @@ a:hover {
     padding: var(--space-lg) 0;
 }
 
+/* This rule's only job is the gap above the divider. The <hr> itself has no
+   styling of its own, so its ~8px default margin left it crowding the
+   branding; the gap now opens up as the viewport widens, where the header
+   has room to breathe and the tightness was most obvious. */
+.site-header hr {
+    margin-top: clamp(var(--space-sm), 2.5vw, var(--space-xl));
+}
+
 .header-wrap {
     padding: 0 var(--space-md);
 }
