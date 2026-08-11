@@ -142,7 +142,7 @@
                 if (about.nextGame) {
                     document.getElementById('next-game-heading').textContent = about.nextGame.heading;
                     document.getElementById('next-game-when').textContent = about.nextGame.when;
-                    document.getElementById('next-game-where').textContent = about.nextGame.where;
+                    setWhere(about.nextGame.where, about.nextGame.whereUrl);
                     document.getElementById('next-game-cost').textContent = about.nextGame.cost;
                     document.getElementById('next-game-note').textContent = about.nextGame.note;
                     document.getElementById('next-game').hidden = false;
@@ -162,6 +162,25 @@
                 }
             })
             .catch(error => console.error('Could not load about content:', error));
+
+        // Renders the location as a map link when the data file supplies a URL,
+        // and as plain text when it does not.
+        function setWhere(where, whereUrl) {
+            const target = document.getElementById('next-game-where');
+            const isWebLink = typeof whereUrl === 'string' && /^https?:\/\//.test(whereUrl);
+
+            if (!isWebLink) {
+                target.textContent = where;
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.href = whereUrl;
+            link.textContent = where;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            target.replaceChildren(link);
+        }
     </script>
 </body>
 </html>
