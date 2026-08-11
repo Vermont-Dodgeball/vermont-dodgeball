@@ -184,10 +184,22 @@ a:hover {
     gap: var(--space-xs);
 }
 
+/* Keep the mark from being squeezed when the row runs short of space; the
+   wordmark next to it is what should give way. */
+.site-logo-img {
+    flex-shrink: 0;
+}
+
 .site-logo-img img {
     /* Deliberately narrow range — the logo holds its size while the wordmark
        beside it does the shrinking. */
     width: clamp(60px, 6vw, 76px);
+    /* Floors it at 60x60. Needed as well as the clamp: the global
+       img { max-width: 100% } would otherwise scale it below that inside a
+       narrow container, and min-width outranks max-width. Height follows on
+       its own — the asset is square — so pinning it too would only risk
+       distortion if the logo were ever replaced with a different shape. */
+    min-width: 60px;
     height: auto;
     border-radius: var(--radius-md);
     display: block;
