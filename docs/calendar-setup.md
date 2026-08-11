@@ -33,11 +33,19 @@ all event details**, or the page can read that something exists but not when.
 This also lets members subscribe to the calendar directly, which is worth
 having regardless — the homepage links to it (see below).
 
-**Give the calendar a proper name while you're in there.** Whatever is in
-**Settings → Name** is what subscribers see in their own calendar app. A
-calendar left with its default name shows up in someone's phone as
-`vermontdodgeball@gmail.com`, which is not obviously dodgeball. Set it to
-*Vermont Dodgeball*.
+**Prefer a dedicated calendar over the account's primary one.** A primary
+calendar's ID is the account's email address, and it publishes that address as
+the feed's name no matter what you put in **Settings → Name** — so anyone
+subscribing from Apple Calendar or Outlook sees `something@gmail.com` sitting
+among their calendars rather than "Vermont Dodgeball". A calendar created with
+**+ Other calendars → Create new calendar** gets its own ID and publishes its
+real name.
+
+It can also be shared with a co-owner, so whoever manages the schedule doesn't
+need the account password. Switching later is a one-line change to
+`calendarId` in [`js/calendar.js`](../js/calendar.js) — the subscribe links
+below follow it automatically — plus recreating the events on the new
+calendar.
 
 ### 2. Copy the calendar ID
 
