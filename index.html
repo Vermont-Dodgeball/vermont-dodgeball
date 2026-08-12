@@ -172,7 +172,19 @@
                 <h1 class="entry-title">Pickup Dodgeball in Burlington, Vermont</h1>
 
                 <div class="entry-content">
-                    <div id="about-body"></div>
+                    <!-- Mirrors the "body" field in data/about.json, which stays the
+                         CMS's copy. Kept here so the page has its text at the first
+                         paint — nothing reflows, and a crawler that runs no
+                         JavaScript still sees it. The script below rewrites these
+                         only if the CMS copy has diverged, and warns when it does:
+                         edit them there, then update this to match. -->
+                    <div id="about-body">
+                        <p>Remember playing dodgeball in elementary school? We don't either but this is probably like that only you get to throw balls at your adult friends and other great people. We use rules based off of the American Dodgeball Association guidelines.</p>
+
+                        <p>Vermont Dodgeball is a pickup dodgeball league. This means that you can just show up and play without a team. The teams are random and put together before we play. It's a fun way to relieve your Monday workday stress. It's only $5.00 per game and it's an awesome workout. Prepare to be sore.</p>
+
+                        <p>Come play!</p>
+                    </div>
 
                     <hr>
 
@@ -261,15 +273,30 @@
 
                 const aboutBody = document.getElementById('about-body');
 
-                // Fall back to plain paragraphs if the Markdown library is unreachable.
-                if (window.marked) {
-                    aboutBody.innerHTML = marked.parse(about.body);
-                } else {
-                    about.body.split('\n\n').forEach(paragraph => {
-                        const p = document.createElement('p');
-                        p.textContent = paragraph;
-                        aboutBody.appendChild(p);
-                    });
+                // The same words are already in the HTML, so replacing them on
+                // every load would reflow the page for no reason. Compare the
+                // visible text and only rewrite when the CMS copy has actually
+                // changed — which also catches Markdown being added, since the
+                // syntax makes the source text differ.
+                const onPage = aboutBody.textContent.replace(/\s+/g, ' ').trim();
+                const inCms = about.body.replace(/\s+/g, ' ').trim();
+
+                if (onPage !== inCms) {
+                    console.warn(
+                        'The About copy in data/about.json no longer matches index.html. ' +
+                        'The page is showing the CMS version; update the HTML to match it.'
+                    );
+
+                    // Fall back to plain paragraphs if the Markdown library is unreachable.
+                    if (window.marked) {
+                        aboutBody.innerHTML = marked.parse(about.body);
+                    } else {
+                        aboutBody.replaceChildren(...about.body.split('\n\n').map(paragraph => {
+                            const p = document.createElement('p');
+                            p.textContent = paragraph;
+                            return p;
+                        }));
+                    }
                 }
             })
             .catch(error => console.error('Could not load about content:', error))

@@ -31,7 +31,13 @@ collections:
               - { label: "Where link (Google Maps)", name: "whereUrl", widget: "string", required: false }
               - { label: "Cost", name: "cost", widget: "string" }
               - { label: "Note", name: "note", widget: "string", required: false }
-          - { label: "Body", name: "body", widget: "markdown" }
+          - label: "Body"
+            name: "body"
+            widget: "markdown"
+            hint: >-
+              These paragraphs are also copied into index.html so the page shows
+              them instantly. Editing here updates the site, but ask Clayton to
+              sync the HTML afterwards so the two do not drift.
 
   - name: "photos"
     label: "Photo Gallery"
