@@ -137,8 +137,14 @@
     <main id="content" class="site-main">
         <div class="container">
 
-            <section class="next-game" id="next-game" aria-labelledby="next-game-heading" hidden>
+            <!-- In flow from the first paint so the page does not jump when the
+                 values arrive. "is-loading" keeps the empty values out of sight
+                 until every source has answered. -->
+            <section class="next-game is-loading" id="next-game" aria-labelledby="next-game-heading">
                 <h2 class="next-game-heading" id="next-game-heading">Next Game</h2>
+                <!-- Decorative: the content itself is what matters to a screen
+                     reader, and announcing a sub-second wait is just noise. -->
+                <div class="next-game-loading" aria-hidden="true"></div>
                 <div class="next-game-alerts" id="next-game-alerts" role="status" hidden></div>
                 <dl class="next-game-details">
                     <div>
@@ -154,19 +160,34 @@
                         <dd id="next-game-cost"></dd>
                     </div>
                 </dl>
-                <div class="next-game-upcoming" id="next-game-upcoming" hidden>
+                <!-- Not hidden: the space is reserved from the first paint and the
+                     contents are kept out of sight until loaded, so the dates do not
+                     push the page down when they arrive. -->
+                <div class="next-game-upcoming" id="next-game-upcoming">
                     <p class="next-game-upcoming-label">Also coming up</p>
                     <ul id="next-game-upcoming-list"></ul>
                 </div>
                 <p class="next-game-note" id="next-game-note"></p>
-                <p class="next-game-subscribe" id="next-game-subscribe" hidden></p>
+                <p class="next-game-subscribe" id="next-game-subscribe"></p>
             </section>
 
             <article>
                 <h1 class="entry-title">Pickup Dodgeball in Burlington, Vermont</h1>
 
                 <div class="entry-content">
-                    <div id="about-body"></div>
+                    <!-- Mirrors the "body" field in data/about.json, which stays the
+                         CMS's copy. Kept here so the page has its text at the first
+                         paint — nothing reflows, and a crawler that runs no
+                         JavaScript still sees it. The script below rewrites these
+                         only if the CMS copy has diverged, and warns when it does:
+                         edit them there, then update this to match. -->
+                    <div id="about-body">
+                        <p>Remember playing dodgeball in elementary school? We don't either but this is probably like that only you get to throw balls at your adult friends and other great people. We use rules based off of the American Dodgeball Association guidelines.</p>
+
+                        <p>Vermont Dodgeball is a pickup dodgeball league. This means that you can just show up and play without a team. The teams are random and put together before we play. It's a fun way to relieve your Monday workday stress. It's only $5.00 per game and it's an awesome workout. Prepare to be sore.</p>
+
+                        <p>Come play!</p>
+                    </div>
 
                     <hr>
 
@@ -188,6 +209,41 @@
     <script>
         const currentYear = new Date().getFullYear();
         document.getElementById("currentYear").innerHTML = currentYear;
+    </script>
+    <script>
+        /* The card is filled by two independent requests — the copy in
+           data/about.json and the schedule from Google. Revealing it as each
+           arrived meant it appeared with placeholder text, rewrote itself, then
+           grew as the notice and upcoming dates were added. This holds it back
+           until both have finished, so it arrives once, complete.
+
+           Counts requests that have *settled*, not succeeded: a failed calendar
+           must not leave the card hidden forever. */
+        window.nextGameCard = (function () {
+            let outstanding = 2;
+            let hasContent = false;
+
+            return {
+                populated() {
+                    hasContent = true;
+                },
+                settled() {
+                    outstanding -= 1;
+                    if (outstanding > 0) {
+                        return;
+                    }
+
+                    const card = document.getElementById('next-game');
+                    if (hasContent) {
+                        card.classList.remove('is-loading');
+                    } else {
+                        // Nothing answered — collapse rather than leave the
+                        // reserved space sitting empty for good.
+                        card.hidden = true;
+                    }
+                },
+            };
+        })();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
     <script>
@@ -215,23 +271,39 @@
                     setWhere(about.nextGame.where, about.nextGame.whereUrl);
                     document.getElementById('next-game-cost').textContent = about.nextGame.cost;
                     document.getElementById('next-game-note').textContent = about.nextGame.note;
-                    document.getElementById('next-game').hidden = false;
+                    window.nextGameCard.populated();
                 }
 
                 const aboutBody = document.getElementById('about-body');
 
-                // Fall back to plain paragraphs if the Markdown library is unreachable.
-                if (window.marked) {
-                    aboutBody.innerHTML = marked.parse(about.body);
-                } else {
-                    about.body.split('\n\n').forEach(paragraph => {
-                        const p = document.createElement('p');
-                        p.textContent = paragraph;
-                        aboutBody.appendChild(p);
-                    });
+                // The same words are already in the HTML, so replacing them on
+                // every load would reflow the page for no reason. Compare the
+                // visible text and only rewrite when the CMS copy has actually
+                // changed — which also catches Markdown being added, since the
+                // syntax makes the source text differ.
+                const onPage = aboutBody.textContent.replace(/\s+/g, ' ').trim();
+                const inCms = about.body.replace(/\s+/g, ' ').trim();
+
+                if (onPage !== inCms) {
+                    console.warn(
+                        'The About copy in data/about.json no longer matches index.html. ' +
+                        'The page is showing the CMS version; update the HTML to match it.'
+                    );
+
+                    // Fall back to plain paragraphs if the Markdown library is unreachable.
+                    if (window.marked) {
+                        aboutBody.innerHTML = marked.parse(about.body);
+                    } else {
+                        aboutBody.replaceChildren(...about.body.split('\n\n').map(paragraph => {
+                            const p = document.createElement('p');
+                            p.textContent = paragraph;
+                            return p;
+                        }));
+                    }
                 }
             })
-            .catch(error => console.error('Could not load about content:', error));
+            .catch(error => console.error('Could not load about content:', error))
+            .finally(() => window.nextGameCard.settled());
 
 
         // Renders the location as a map link when the data file supplies a URL,
