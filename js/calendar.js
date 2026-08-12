@@ -374,6 +374,9 @@ function loadCalendar() {
 
     if (calendarId.startsWith(CALENDAR_PLACEHOLDER) || apiKey.startsWith(CALENDAR_PLACEHOLDER)) {
         // Not set up yet — leave the static values in place and stay quiet.
+        // Collapse the space held for the schedule, since none is coming.
+        document.getElementById('next-game-upcoming').hidden = true;
+        document.getElementById('next-game-subscribe').hidden = true;
         cardGate.settled();
         return;
     }

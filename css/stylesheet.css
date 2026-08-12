@@ -419,11 +419,14 @@ a:hover {
     margin-bottom: var(--space-xs);
 }
 
+/* Stacked rather than a wrapping row. Two dates then occupy two lines at every
+   width, which is what makes the space below reservable — as a wrapping row the
+   height changed with the viewport and could not be held in advance. */
 .next-game-upcoming ul {
     list-style: none;
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-xs) var(--space-lg);
+    flex-direction: column;
+    gap: var(--space-xs);
     margin: 0;
 }
 
@@ -455,8 +458,24 @@ a:hover {
    rewrite itself. visibility also takes the note's rule with it, which would
    otherwise draw a line across an empty card. */
 .next-game.is-loading .next-game-details dd,
-.next-game.is-loading .next-game-note {
+.next-game.is-loading .next-game-note,
+.next-game.is-loading .next-game-upcoming,
+.next-game.is-loading .next-game-subscribe {
     visibility: hidden;
+}
+
+/* Holds the room the dates and the subscribe line will need, so neither pushes
+   the page down when the calendar answers. The list reserves one line per
+   upcoming date, matching upcomingCount in js/calendar.js. */
+.next-game.is-loading .next-game-upcoming ul {
+    /* Two dates: two lines at the inherited 1.65 line-height, plus the gap
+       between them. Matches upcomingCount in js/calendar.js — change both
+       together. */
+    min-height: calc(2 * 1.65em + var(--space-xs));
+}
+
+.next-game-subscribe {
+    min-height: 1.65em;
 }
 
 /* Sits over the reserved space rather than in the flow, so showing and hiding
