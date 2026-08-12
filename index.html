@@ -189,6 +189,32 @@
         const currentYear = new Date().getFullYear();
         document.getElementById("currentYear").innerHTML = currentYear;
     </script>
+    <script>
+        /* The card is filled by two independent requests — the copy in
+           data/about.json and the schedule from Google. Revealing it as each
+           arrived meant it appeared with placeholder text, rewrote itself, then
+           grew as the notice and upcoming dates were added. This holds it back
+           until both have finished, so it arrives once, complete.
+
+           Counts requests that have *settled*, not succeeded: a failed calendar
+           must not leave the card hidden forever. */
+        window.nextGameCard = (function () {
+            let outstanding = 2;
+            let hasContent = false;
+
+            return {
+                populated() {
+                    hasContent = true;
+                },
+                settled() {
+                    outstanding -= 1;
+                    if (outstanding === 0 && hasContent) {
+                        document.getElementById('next-game').hidden = false;
+                    }
+                },
+            };
+        })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
     <script>
         fetch('data/about.json')
@@ -215,7 +241,7 @@
                     setWhere(about.nextGame.where, about.nextGame.whereUrl);
                     document.getElementById('next-game-cost').textContent = about.nextGame.cost;
                     document.getElementById('next-game-note').textContent = about.nextGame.note;
-                    document.getElementById('next-game').hidden = false;
+                    window.nextGameCard.populated();
                 }
 
                 const aboutBody = document.getElementById('about-body');
@@ -231,7 +257,8 @@
                     });
                 }
             })
-            .catch(error => console.error('Could not load about content:', error));
+            .catch(error => console.error('Could not load about content:', error))
+            .finally(() => window.nextGameCard.settled());
 
 
         // Renders the location as a map link when the data file supplies a URL,

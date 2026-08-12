@@ -35,6 +35,11 @@ const CALENDAR_CONFIG = {
 
 const CALENDAR_PLACEHOLDER = 'REPLACE_WITH_';
 
+// index.html holds the card back until every source has reported in, so it
+// appears once rather than filling in piecemeal. The fallback keeps this file
+// usable on a page that has no such coordinator.
+const cardGate = window.nextGameCard || { populated() {}, settled() {} };
+
 // Event titles starting with one of these mark a night with no dodgeball;
 // whatever follows the prefix is shown as the reason. "CANCELLED" is for the
 // unforeseen (snow, a closed gym), "NO DODGEBALL" for a planned skip.
@@ -346,7 +351,7 @@ function renderNextGame(events) {
         // Everything in range is cancelled. The alerts say so; leave the
         // "When" line on its static fallback rather than inventing a date.
         renderUpcoming([]);
-        document.getElementById('next-game').hidden = false;
+        cardGate.populated();
         return;
     }
 
@@ -359,9 +364,9 @@ function renderNextGame(events) {
 
     renderUpcoming(events.slice(firstPlayable + 1, firstPlayable + 1 + CALENDAR_CONFIG.upcomingCount));
 
-    // The card is normally revealed by the about.json handler; do it here
-    // too so real schedule data still shows if that request failed.
-    document.getElementById('next-game').hidden = false;
+    // Reports content even if data/about.json failed, so a working schedule
+    // still shows on its own.
+    cardGate.populated();
 }
 
 function loadCalendar() {
@@ -369,6 +374,7 @@ function loadCalendar() {
 
     if (calendarId.startsWith(CALENDAR_PLACEHOLDER) || apiKey.startsWith(CALENDAR_PLACEHOLDER)) {
         // Not set up yet — leave the static values in place and stay quiet.
+        cardGate.settled();
         return;
     }
 
@@ -406,7 +412,8 @@ function loadCalendar() {
             renderNextGame(events);
             renderEventSchema(events);
         })
-        .catch(error => console.error('Could not load the game calendar:', error));
+        .catch(error => console.error('Could not load the game calendar:', error))
+        .finally(() => cardGate.settled());
 }
 
 loadCalendar();
