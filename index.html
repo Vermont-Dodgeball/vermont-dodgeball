@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>About Vermont Dodgeball – Vermont Dodgeball</title>
+    <title>Vermont Dodgeball – Pickup Dodgeball in Burlington, VT</title>
     <meta name="description" content="Vermont Dodgeball is a pickup dodgeball league playing every Monday night in Burlington. No team needed — just show up. $5 per game.">
 
     <meta property="og:type" content="website">
@@ -19,6 +19,56 @@
 
     <link rel="icon" type="image/jpeg" href="favicon.jpg" sizes="32x32">
     <link rel="stylesheet" href="css/stylesheet.css">
+
+    <!-- Describes the league and the venue for search engines. Static so it is
+         readable without running JavaScript; js/calendar.js adds the individual
+         games separately, since those change. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SportsOrganization",
+          "@id": "https://vtdodgeball.com/#club",
+          "name": "Vermont Dodgeball",
+          "alternateName": "Vermont's Pickup Dodgeball League",
+          "description": "A pickup dodgeball league in Burlington, Vermont. Teams are picked before each game, so anyone can show up and play without bringing a team. $5 per game.",
+          "url": "https://vtdodgeball.com/",
+          "logo": "https://vtdodgeball.com/assets/images/vermont_dodgeball_logo.jpg",
+          "image": "https://vtdodgeball.com/assets/images/centerpiece.jpg",
+          "sport": "Dodgeball",
+          "areaServed": {
+            "@type": "City",
+            "name": "Burlington",
+            "addressRegion": "VT"
+          },
+          "sameAs": [
+            "https://www.facebook.com/VermontDodgeball/",
+            "https://www.instagram.com/vermont_dodgeball/"
+          ]
+        },
+        {
+          "@type": "Place",
+          "@id": "https://vtdodgeball.com/#venue",
+          "name": "Robert Miller Community & Recreation Center",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "130 Gosse Court",
+            "addressLocality": "Burlington",
+            "addressRegion": "VT",
+            "postalCode": "05408",
+            "addressCountry": "US"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 44.513315,
+            "longitude": -73.2464383
+          },
+          "hasMap": "https://maps.app.goo.gl/3VjyD1TfFNQBd2LM8"
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
     <a class="skip-link" href="#content">Skip to content</a>
@@ -113,7 +163,7 @@
             </section>
 
             <article>
-                <h1 class="entry-title">About Vermont Dodgeball</h1>
+                <h1 class="entry-title">Pickup Dodgeball in Burlington, Vermont</h1>
 
                 <div class="entry-content">
                     <div id="about-body"></div>

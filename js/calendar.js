@@ -205,6 +205,83 @@ function renderSubscribeLinks() {
     container.hidden = false;
 }
 
+/**
+ * Publishes the upcoming games as schema.org SportsEvent data, which lets
+ * search engines list them with their date, venue and price rather than just
+ * linking the page.
+ *
+ * Written from the calendar rather than kept in the markup because the dates
+ * change. The trade-off is that a crawler only sees it after running the page's
+ * JavaScript; the league and venue details in index.html are static for that
+ * reason. Emitting these statically would need a build step (see Phase 2 in
+ * docs/calendar-integration-plan.md).
+ */
+function renderEventSchema(events) {
+    const previous = document.getElementById('game-schema');
+    if (previous) {
+        previous.remove();
+    }
+    if (events.length === 0) {
+        return;
+    }
+
+    const venue = {
+        '@type': 'Place',
+        name: 'Robert Miller Community & Recreation Center',
+        address: {
+            '@type': 'PostalAddress',
+            streetAddress: '130 Gosse Court',
+            addressLocality: 'Burlington',
+            addressRegion: 'VT',
+            postalCode: '05408',
+            addressCountry: 'US',
+        },
+    };
+
+    const games = events.map(event => {
+        const cancellation = readCancellation(event);
+        const start = event.start.dateTime || event.start.date;
+        const end = event.end && (event.end.dateTime || event.end.date);
+
+        return {
+            '@context': 'https://schema.org',
+            '@type': 'SportsEvent',
+            name: 'Vermont Dodgeball — Pickup Night',
+            description: 'Pickup dodgeball in Burlington. Teams are picked before the game, so no team is needed.',
+            startDate: start,
+            ...(end ? { endDate: end } : {}),
+            // Google shows a cancelled game as cancelled rather than dropping
+            // it, which is the same reasoning as keeping it on the page.
+            eventStatus: cancellation
+                ? 'https://schema.org/EventCancelled'
+                : 'https://schema.org/EventScheduled',
+            eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+            location: venue,
+            organizer: {
+                '@type': 'SportsOrganization',
+                '@id': 'https://vtdodgeball.com/#club',
+                name: 'Vermont Dodgeball',
+                url: 'https://vtdodgeball.com/',
+            },
+            image: 'https://vtdodgeball.com/assets/images/centerpiece.jpg',
+            offers: {
+                '@type': 'Offer',
+                price: '5',
+                priceCurrency: 'USD',
+                availability: 'https://schema.org/InStock',
+                url: 'https://vtdodgeball.com/',
+                validFrom: new Date().toISOString().slice(0, 10),
+            },
+        };
+    });
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'game-schema';
+    script.textContent = JSON.stringify(games, null, 2);
+    document.head.appendChild(script);
+}
+
 function renderUpcoming(events) {
     const container = document.getElementById('next-game-upcoming');
     const list = document.getElementById('next-game-upcoming-list');
@@ -327,6 +404,7 @@ function loadCalendar() {
                 .filter(event => event.start)
                 .filter(event => now < visibleUntil(event));
             renderNextGame(events);
+            renderEventSchema(events);
         })
         .catch(error => console.error('Could not load the game calendar:', error));
 }
