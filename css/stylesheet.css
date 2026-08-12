@@ -332,6 +332,7 @@ a:hover {
    --------------------------------------------------------------- */
 
 .next-game {
+    position: relative;
     margin: 0 0 var(--space-xl);
     padding: var(--space-lg);
     background-color: var(--color-surface);
@@ -367,6 +368,9 @@ a:hover {
     color: var(--color-text-strong);
     font-weight: 600;
     line-height: 1.3;
+    /* Holds a line's worth of height before the value arrives, so the rows
+       are already their final size at the first paint. */
+    min-height: 1.3em;
 }
 
 .next-game-alerts {
@@ -443,6 +447,51 @@ a:hover {
     padding-top: var(--space-md);
     border-top: 1px solid var(--color-border);
     color: var(--color-text-muted);
+    min-height: 1.65em;
+}
+
+/* Values are hidden rather than removed while loading: they keep their space,
+   so nothing moves when they appear, and the reader never watches a value
+   rewrite itself. visibility also takes the note's rule with it, which would
+   otherwise draw a line across an empty card. */
+.next-game.is-loading .next-game-details dd,
+.next-game.is-loading .next-game-note {
+    visibility: hidden;
+}
+
+/* Sits over the reserved space rather than in the flow, so showing and hiding
+   it never changes the card's height. */
+.next-game-loading {
+    display: none;
+    position: absolute;
+    inset: 0;
+    place-items: center;
+    /* Held back a quarter second: a request that answers quickly should never
+       flash a spinner, which reads as jumpier than the wait it describes. */
+    opacity: 0;
+    animation: next-game-loading-appear 0.2s ease 0.25s forwards;
+}
+
+.next-game.is-loading .next-game-loading {
+    display: grid;
+}
+
+.next-game-loading::after {
+    content: "";
+    width: 26px;
+    height: 26px;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-accent);
+    border-radius: 50%;
+    animation: next-game-loading-spin 0.8s linear infinite;
+}
+
+@keyframes next-game-loading-appear {
+    to { opacity: 1; }
+}
+
+@keyframes next-game-loading-spin {
+    to { transform: rotate(360deg); }
 }
 
 /* ---------------------------------------------------------------

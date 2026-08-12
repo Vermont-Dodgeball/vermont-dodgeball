@@ -137,8 +137,14 @@
     <main id="content" class="site-main">
         <div class="container">
 
-            <section class="next-game" id="next-game" aria-labelledby="next-game-heading" hidden>
+            <!-- In flow from the first paint so the page does not jump when the
+                 values arrive. "is-loading" keeps the empty values out of sight
+                 until every source has answered. -->
+            <section class="next-game is-loading" id="next-game" aria-labelledby="next-game-heading">
                 <h2 class="next-game-heading" id="next-game-heading">Next Game</h2>
+                <!-- Decorative: the content itself is what matters to a screen
+                     reader, and announcing a sub-second wait is just noise. -->
+                <div class="next-game-loading" aria-hidden="true"></div>
                 <div class="next-game-alerts" id="next-game-alerts" role="status" hidden></div>
                 <dl class="next-game-details">
                     <div>
@@ -208,8 +214,17 @@
                 },
                 settled() {
                     outstanding -= 1;
-                    if (outstanding === 0 && hasContent) {
-                        document.getElementById('next-game').hidden = false;
+                    if (outstanding > 0) {
+                        return;
+                    }
+
+                    const card = document.getElementById('next-game');
+                    if (hasContent) {
+                        card.classList.remove('is-loading');
+                    } else {
+                        // Nothing answered — collapse rather than leave the
+                        // reserved space sitting empty for good.
+                        card.hidden = true;
                     }
                 },
             };
