@@ -1,9 +1,9 @@
 {
   "photos": [
-    { "src": "assets/images/event_images/11049589_813506993990_4959144656143882501_o.jpg", "alt": "Vermont Dodgeball event photo" },
-    { "src": "assets/images/event_images/12357196_813507153670_2262287993943063220_o.jpg", "alt": "Vermont Dodgeball event photo" },
-    { "src": "assets/images/event_images/12370872_813507902170_2163309519255899392_o.jpg", "alt": "Vermont Dodgeball event photo" },
-    { "src": "assets/images/event_images/12375014_813506779420_5667679698125042210_o.jpg", "alt": "Vermont Dodgeball event photo" },
-    { "src": "assets/images/event_images/15975250_1823576351217171_7058568255107167939_o.jpg", "alt": "Vermont Dodgeball event photo" }
+    { "src": "assets/images/event_images/11049589_813506993990_4959144656143882501_o.jpg", "alt": "A player winds up to throw a red dodgeball while holding a purple one in his other hand" },
+    { "src": "assets/images/event_images/12357196_813507153670_2262287993943063220_o.jpg", "alt": "A player cocks back a blue dodgeball to throw as an opponent waits at the far end of the court" },
+    { "src": "assets/images/event_images/12370872_813507902170_2163309519255899392_o.jpg", "alt": "A player in a blue shirt lines up a throw with an orange dodgeball, another player ready behind him" },
+    { "src": "assets/images/event_images/12375014_813506779420_5667679698125042210_o.jpg", "alt": "A player in white draws back a blue dodgeball while two teammates hold position behind him" },
+    { "src": "assets/images/event_images/15975250_1823576351217171_7058568255107167939_o.jpg", "alt": "Mid-game action with a ball in flight as one player lunges to throw and another gathers two balls at the near end" }
   ]
 }

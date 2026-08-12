@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# The CMS is a private editing tool, not content.
+Disallow: /admin/
+
+Sitemap: https://vtdodgeball.com/sitemap.xml
