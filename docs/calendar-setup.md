@@ -15,9 +15,15 @@ The page asks Google for the calendar's upcoming events and uses the first one
 for "When", listing the next few dates underneath. It re-reads on every page
 load, so the site is never stale.
 
-Only the **When** line comes from the calendar. Where, Cost, and the note stay
-in `data/about.json` and remain CMS-editable — the venue rarely changes and
-keeping it there preserves the Google Maps link.
+The **When** and **Where** lines both come from the calendar — the date from
+the event, the venue from that event's own location, linked through to Google
+Maps. Booking the gym is what decides both, so the calendar is the authority
+for both.
+
+Cost and the note stay in `data/about.json` and remain CMS-editable. The
+`where` and `whereUrl` there are only a fallback, used if the calendar cannot
+be reached; they are worth refreshing if you move venue, but the card itself
+follows the calendar without being told.
 
 ## One-time setup
 

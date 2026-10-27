@@ -50,10 +50,10 @@
         {
           "@type": "Place",
           "@id": "https://vtdodgeball.com/#venue",
-          "name": "Robert Miller Community & Recreation Center",
+          "name": "C. P. Smith Elementary School",
           "address": {
             "@type": "PostalAddress",
-            "streetAddress": "130 Gosse Court",
+            "streetAddress": "332 Ethan Allen Pkwy",
             "addressLocality": "Burlington",
             "addressRegion": "VT",
             "postalCode": "05408",
@@ -61,10 +61,10 @@
           },
           "geo": {
             "@type": "GeoCoordinates",
-            "latitude": 44.513315,
-            "longitude": -73.2464383
+            "latitude": 44.5131124,
+            "longitude": -73.2430147
           },
-          "hasMap": "https://maps.app.goo.gl/3VjyD1TfFNQBd2LM8"
+          "hasMap": "https://www.google.com/maps/place/C.+P.+Smith+Elementary+School/@44.5131124,-73.2430147,19z/data=!4m2!3m1!1s0x4cca65550a9947eb:0xb63ea5ed6c8c83e7"
         }
       ]
     }
@@ -268,7 +268,12 @@
                         whenElement.textContent = about.nextGame.when;
                     }
 
-                    setWhere(about.nextGame.where, about.nextGame.whereUrl);
+                    // js/calendar.js fills this from the game's own location
+                    // and marks it; this is the fallback when it cannot.
+                    const whereElement = document.getElementById('next-game-where');
+                    if (whereElement.dataset.source !== 'calendar') {
+                        setWhere(about.nextGame.where, about.nextGame.whereUrl);
+                    }
                     document.getElementById('next-game-cost').textContent = about.nextGame.cost;
                     document.getElementById('next-game-note').textContent = about.nextGame.note;
                     window.nextGameCard.populated();
