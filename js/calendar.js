@@ -230,18 +230,11 @@ function renderEventSchema(events) {
         return;
     }
 
-    const venue = {
-        '@type': 'Place',
-        name: 'Robert Miller Community & Recreation Center',
-        address: {
-            '@type': 'PostalAddress',
-            streetAddress: '130 Gosse Court',
-            addressLocality: 'Burlington',
-            addressRegion: 'VT',
-            postalCode: '05408',
-            addressCountry: 'US',
-        },
-    };
+    // Taken from the event rather than hardcoded, so search results follow a
+    // venue change the same way the card does.
+    const placeFor = event => event.location
+        ? { '@type': 'Place', name: event.location.split(',')[0].trim(), address: event.location }
+        : { '@type': 'Place', name: 'Vermont Dodgeball' };
 
     const games = events.map(event => {
         const cancellation = readCancellation(event);
@@ -261,7 +254,7 @@ function renderEventSchema(events) {
                 ? 'https://schema.org/EventCancelled'
                 : 'https://schema.org/EventScheduled',
             eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-            location: venue,
+            location: placeFor(event),
             organizer: {
                 '@type': 'SportsOrganization',
                 '@id': 'https://vtdodgeball.com/#club',
@@ -285,6 +278,34 @@ function renderEventSchema(events) {
     script.id = 'game-schema';
     script.textContent = JSON.stringify(games, null, 2);
     document.head.appendChild(script);
+}
+
+/**
+ * Writes the venue from the game itself. Previously this line came from
+ * data/about.json, on the assumption the venue rarely changes — which meant
+ * that when it did change, the calendar was right and the page quietly was
+ * not. The calendar is the booking, so it is the authority.
+ */
+function renderVenue(event) {
+    if (!event.location) {
+        return;   // leave the data/about.json fallback in place
+    }
+
+    const target = document.getElementById('next-game-where');
+    // Google stores a full postal address; the part before the first comma is
+    // the name people recognise, and the whole string is what Maps needs.
+    const name = event.location.split(',')[0].trim();
+
+    const link = document.createElement('a');
+    link.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`;
+    link.textContent = name;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+
+    target.replaceChildren(link);
+    // Tells the data/about.json handler not to overwrite this, whichever of
+    // the two requests finishes first.
+    target.dataset.source = 'calendar';
 }
 
 function renderUpcoming(events) {
@@ -361,6 +382,8 @@ function renderNextGame(events) {
     // Tells the data/about.json handler not to overwrite this with the
     // static fallback, whichever of the two requests finishes first.
     whenElement.dataset.source = 'calendar';
+
+    renderVenue(events[firstPlayable]);
 
     renderUpcoming(events.slice(firstPlayable + 1, firstPlayable + 1 + CALENDAR_CONFIG.upcomingCount));
 
